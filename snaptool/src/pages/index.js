@@ -76,6 +76,28 @@ export default function PlaygroundPage() {
     accept: "image/*",
   });
 
+  
+  const handlePaste = (event) => {
+    const items = event.clipboardData.items;
+
+    for (let i = 0; i < items.length; i++) {
+      if (items[i].type.indexOf('image') !== -1) {
+        const blob = items[i].getAsFile();
+        const reader = new FileReader();
+
+        reader.onload = () => {
+          setDroppedImage(reader.result);
+        };
+
+        reader.readAsDataURL(blob);
+
+        // Prevent the default paste action (e.g., pasting text)
+        event.preventDefault();
+        break; // Stop processing further items
+      }
+    }
+  };
+
   const bgColors = [
     {
       name: "Sweet Morning",
@@ -107,7 +129,10 @@ export default function PlaygroundPage() {
 
   return (
     <>
-      <div className="hidden h-full flex-col md:flex">
+      <div className="hidden h-full flex-col md:flex" 
+      onPaste={handlePaste} 
+      >
+
         <div className="container flex flex-col items-start justify-between space-y-2 py-4 sm:flex-row sm:items-center sm:space-y-0 md:h-16">
           <h2 className="text-lg font-semibold">SnapTool</h2>
           <div className="ml-auto flex w-full space-x-2 sm:justify-end">
