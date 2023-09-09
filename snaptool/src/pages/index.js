@@ -12,6 +12,9 @@ import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Slider } from "@/components/ui/slider";
 import { useDropzone } from "react-dropzone";
+import html2canvas from 'html2canvas';
+import { saveAs } from 'file-saver';
+
 
 export default function PlaygroundPage() {
   const [droppedImage, setDroppedImage] = useState(null);
@@ -36,6 +39,21 @@ export default function PlaygroundPage() {
   const handleWidthChange = (newValue) => {
     console.log(newValue);
     setImageWidth(newValue);
+  };
+
+
+  const downloadImage = () => {
+    const divToCapture = document.querySelector('.capture-div'); // Replace with the appropriate class or ID of your div
+  
+    if (divToCapture) {
+      html2canvas(divToCapture).then((canvas) => {
+        // Convert the canvas to a blob
+        canvas.toBlob((blob) => {
+          // Save the blob as a file using file-saver
+          saveAs(blob, 'snaptool-image.png'); // You can change the file format and name here
+        });
+      });
+    }
   };
 
   const onDrop = useCallback((acceptedFiles) => {
@@ -111,7 +129,7 @@ export default function PlaygroundPage() {
                   <div className="flex h-full flex-col space-y-4">
                     <div
                       {...getRootProps()}
-                      className={`h-full min-h-[300px] lg:min-h-[480px] xl:min-h-[480px] w-full border-2 border-slate-600 flex items-center justify-center py-full rounded-3xl hover:cursor-pointer`}
+                      className={` h-full min-h-[300px] lg:min-h-[480px] xl:min-h-[480px] w-full border-2 border-slate-600 flex items-center justify-center py-full rounded-3xl hover:cursor-pointer`}
                       style={{
                         background: `linear-gradient(to right, ${currentBgColor.from}, ${currentBgColor.to})`,
                         backgroundSize: "cover",
@@ -120,15 +138,15 @@ export default function PlaygroundPage() {
                     >
                       <input {...getInputProps()} />
                       <div
-                        className="dropzone-div"
-                        style={{ width: `${imageWidth}px`, height: `${imageHeight}px`,  borderRadius: `${imageBorder}px` }}
+                        className={`dropzone-div `}
+                        style={{ width: `${imageWidth}px`, height: `${imageHeight}px`}}
                       >
                         {droppedImage && (
                           <img
                             src={droppedImage}
                             alt="Dropped Image"
                             className={`w-full h-full`}
-                            style={{ position: "relative", zIndex: 1 }}
+                            style={{ position: "relative", zIndex: 1,  borderRadius: `${imageBorder}px` }}
                           />
                         )}
                       </div>
@@ -166,7 +184,7 @@ export default function PlaygroundPage() {
                     <h1 className="my-3">Rounded</h1>
                     <Slider
                       defaultValue={[imageBorder]}
-                      max={100}
+                      max={24}
                       step={1}
                       onValueChange={handleBorderChange}
                     />
@@ -193,7 +211,7 @@ export default function PlaygroundPage() {
                   </div>
 
                   <div className="grid grid-cols-2 gap-2">
-                    <Button className="w-full">Download</Button>
+                    <Button className="w-full" onClick={()=> downloadImage()}>Download</Button>
                     <Button className="w-full " onClick={() => onDelete()}>
                       Remove
                     </Button>
