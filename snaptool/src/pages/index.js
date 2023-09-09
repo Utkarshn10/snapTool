@@ -10,14 +10,32 @@ import {
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Textarea } from "@/components/ui/textarea";
+import { Slider } from "@/components/ui/slider";
 import { useDropzone } from "react-dropzone";
 
 export default function PlaygroundPage() {
   const [droppedImage, setDroppedImage] = useState(null);
+  const [imageHeight, setImageHeight] = useState(140);
+  const [imageWidth, setImageWidth] = useState(140);
+  const [imageBorder, setImageBorder] = useState(0);
 
   const onDelete = () => {
     setDroppedImage(null);
+  };
+
+  const handleBorderChange = (newValue) => {
+    console.log(newValue);
+    setImageBorder(newValue);
+  };
+
+  const handleHeightChange = (newValue) => {
+    console.log(newValue);
+    setImageHeight(newValue);
+  };
+
+  const handleWidthChange = (newValue) => {
+    console.log(newValue);
+    setImageWidth(newValue);
   };
 
   const onDrop = useCallback((acceptedFiles) => {
@@ -31,7 +49,6 @@ export default function PlaygroundPage() {
       reader.onload = function () {
         setDroppedImage(reader.result);
       };
-
       reader.readAsDataURL(imageFile);
     }
   }, []);
@@ -94,7 +111,7 @@ export default function PlaygroundPage() {
                   <div className="flex h-full flex-col space-y-4">
                     <div
                       {...getRootProps()}
-                      className={`h-full flex items-center justify-center min-h-[300px] lg:min-h-[480px] xl:min-h-[480px] w-full border-2 border-slate-600 flex items-center justify-center py-full rounded-3xl hover:cursor-pointer`}
+                      className={`h-full min-h-[300px] lg:min-h-[480px] xl:min-h-[480px] w-full border-2 border-slate-600 flex items-center justify-center py-full rounded-3xl hover:cursor-pointer`}
                       style={{
                         background: `linear-gradient(to right, ${currentBgColor.from}, ${currentBgColor.to})`,
                         backgroundSize: "cover",
@@ -102,12 +119,15 @@ export default function PlaygroundPage() {
                       }}
                     >
                       <input {...getInputProps()} />
-                      <div className="dropzone-div h-50 w-60">
+                      <div
+                        className="dropzone-div"
+                        style={{ width: `${imageWidth}px`, height: `${imageHeight}px`,  borderRadius: `${imageBorder}px` }}
+                      >
                         {droppedImage && (
                           <img
                             src={droppedImage}
                             alt="Dropped Image"
-                            className="w-60 h-60 "
+                            className={`w-full h-full`}
                             style={{ position: "relative", zIndex: 1 }}
                           />
                         )}
@@ -141,6 +161,37 @@ export default function PlaygroundPage() {
                       );
                     })}
                   </div>
+
+                  <div className="mb-2">
+                    <h1 className="my-3">Rounded</h1>
+                    <Slider
+                      defaultValue={[imageBorder]}
+                      max={100}
+                      step={1}
+                      onValueChange={handleBorderChange}
+                    />
+                  </div>
+
+                  <div className="my-2">
+                    <h1 className="my-3">Height</h1>
+                    <Slider
+                      defaultValue={[imageHeight]}
+                      max={420}
+                      step={1}
+                      onValueChange={handleHeightChange}
+                    />
+                  </div>
+
+                  <div className="my-2">
+                    <h1 className="my-3">Width</h1>
+                    <Slider
+                      defaultValue={[imageWidth]}
+                      max={420}
+                      step={1}
+                      onValueChange={handleWidthChange}
+                    />
+                  </div>
+
                   <div className="grid grid-cols-2 gap-2">
                     <Button className="w-full">Download</Button>
                     <Button className="w-full " onClick={() => onDelete()}>
