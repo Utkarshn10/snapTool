@@ -14,7 +14,7 @@ import { Slider } from "@/components/ui/slider";
 import { useDropzone } from "react-dropzone";
 import html2canvas from 'html2canvas';
 import { saveAs } from 'file-saver';
-
+import { Analytics } from '@vercel/analytics/react';
 
 export default function PlaygroundPage() {
   const [droppedImage, setDroppedImage] = useState(null);
@@ -135,6 +135,7 @@ export default function PlaygroundPage() {
 
   return (
     <>
+      <Analytics />
       <div className="hidden h-full flex-col md:flex" 
       // onPaste={handlePaste} 
       >
