@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { CounterClockwiseClockIcon } from "@radix-ui/react-icons";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect,useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   HoverCard,
@@ -21,6 +21,7 @@ export default function PlaygroundPage() {
   const [imageHeight, setImageHeight] = useState(140);
   const [imageWidth, setImageWidth] = useState(140);
   const [imageBorder, setImageBorder] = useState(0);
+  const captureDivRef = useRef(null);
 
   const onDelete = () => {
     setDroppedImage(null);
@@ -43,14 +44,19 @@ export default function PlaygroundPage() {
 
 
   const downloadImage = () => {
-    const divToCapture = document.querySelector('.capture-div'); // Replace with the appropriate class or ID of your div
-  
-    if (divToCapture) {
+    if (captureDivRef.current) {
+      const divToCapture = captureDivRef.current;
+ 
+      // Temporarily remove the border radius from the outer div for capture
+      const originalBorderRadius = divToCapture.style.borderRadius;
+      divToCapture.style.borderRadius = '0';
+
       html2canvas(divToCapture).then((canvas) => {
-        // Convert the canvas to a blob
+        // Reset the border radius to its original value
+        divToCapture.style.borderRadius = originalBorderRadius;
+
         canvas.toBlob((blob) => {
-          // Save the blob as a file using file-saver
-          saveAs(blob, 'snaptool-image.png'); // You can change the file format and name here
+          saveAs(blob, 'captured-image.png'); // You can change the file format and name here
         });
       });
     }
@@ -130,11 +136,11 @@ export default function PlaygroundPage() {
   return (
     <>
       <div className="hidden h-full flex-col md:flex" 
-      onPaste={handlePaste} 
+      // onPaste={handlePaste} 
       >
 
         <div className="container flex flex-col items-start justify-between space-y-2 py-4 sm:flex-row sm:items-center sm:space-y-0 md:h-16">
-          <h2 className="text-lg font-semibold">SnapTool</h2>
+          <h2 className="text-lg font-bold">SnapTool</h2>
           <div className="ml-auto flex w-full space-x-2 sm:justify-end">
             {/* <PresetSelector presets={presets} />
             <PresetSave /> */}
@@ -154,7 +160,8 @@ export default function PlaygroundPage() {
                   <div className="flex h-full flex-col space-y-4">
                     <div
                       {...getRootProps()}
-                      className={` h-full min-h-[300px] lg:min-h-[480px] xl:min-h-[480px] w-full border-2 border-slate-600 flex items-center justify-center py-full rounded-3xl hover:cursor-pointer`}
+                      ref={captureDivRef}
+                      className={` h-full min-h-[300px] lg:min-h-[480px] xl:min-h-[480px] w-full border border-slate-600 flex items-center justify-center py-full rounded-3xl hover:cursor-pointer`}
                       style={{
                         background: `linear-gradient(to right, ${currentBgColor.from}, ${currentBgColor.to})`,
                         backgroundSize: "cover",
@@ -163,7 +170,7 @@ export default function PlaygroundPage() {
                     >
                       <input {...getInputProps()} />
                       <div
-                        className={`dropzone-div `}
+                        className={`dropzone-div`}
                         style={{ width: `${imageWidth}px`, height: `${imageHeight}px`}}
                       >
                         {droppedImage && (
