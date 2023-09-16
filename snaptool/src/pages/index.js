@@ -1,20 +1,31 @@
 import Image from "next/image";
 import { CounterClockwiseClockIcon } from "@radix-ui/react-icons";
-import { useCallback, useEffect,useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
-import {
-  HoverCard,
-  HoverCardContent,
-  HoverCardTrigger,
-} from "@/components/ui/hover-card";
-import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Slider } from "@/components/ui/slider";
 import { useDropzone } from "react-dropzone";
-import html2canvas from 'html2canvas';
-import { saveAs } from 'file-saver';
-import { Analytics } from '@vercel/analytics/react';
+import html2canvas from "html2canvas";
+import { saveAs } from "file-saver";
+import { Analytics } from "@vercel/analytics/react";
+import Link from "next/link";
+
+function Footer() {
+  return (
+    <div className="w-full md:h-5 text-xs md:text-lg px-4 sm:px-6 lg:px-8 pt-6 pb-2 md:fixed bottom-15 md:bottom-10 bg-[#222C42]">
+      <div className="flex justify-center text-center font-normal text-white">
+        <span className="font-normal">© 2023 </span>
+        <Link
+          href="https://github.com/Utkarshn10"
+          className="ml-1  hover:underline underline-offset-2"
+        >
+          Utkarsh Nagar
+        </Link>
+        <span className="ml-1">· All rights reserved.</span>
+      </div>
+    </div>
+  );
+}
 
 export default function PlaygroundPage() {
   const [droppedImage, setDroppedImage] = useState(null);
@@ -28,35 +39,31 @@ export default function PlaygroundPage() {
   };
 
   const handleBorderChange = (newValue) => {
-    console.log(newValue);
     setImageBorder(newValue);
   };
 
   const handleHeightChange = (newValue) => {
-    console.log(newValue);
     setImageHeight(newValue);
   };
 
   const handleWidthChange = (newValue) => {
-    console.log(newValue);
     setImageWidth(newValue);
   };
-
 
   const downloadImage = () => {
     if (captureDivRef.current) {
       const divToCapture = captureDivRef.current;
- 
+
       // Temporarily remove the border radius from the outer div for capture
       const originalBorderRadius = divToCapture.style.borderRadius;
-      divToCapture.style.borderRadius = '0';
+      divToCapture.style.borderRadius = "0";
 
       html2canvas(divToCapture).then((canvas) => {
         // Reset the border radius to its original value
         divToCapture.style.borderRadius = originalBorderRadius;
 
         canvas.toBlob((blob) => {
-          saveAs(blob, 'captured-image.png'); // You can change the file format and name here
+          saveAs(blob, "snaptool-image.png"); // You can change the file format and name here
         });
       });
     }
@@ -82,12 +89,11 @@ export default function PlaygroundPage() {
     accept: "image/*",
   });
 
-  
   const handlePaste = (event) => {
     const items = event.clipboardData.items;
 
     for (let i = 0; i < items.length; i++) {
-      if (items[i].type.indexOf('image') !== -1) {
+      if (items[i].type.indexOf("image") !== -1) {
         const blob = items[i].getAsFile();
         const reader = new FileReader();
 
@@ -130,131 +136,130 @@ export default function PlaygroundPage() {
       from: "#FF61D2",
       to: "#FE9090",
     },
+    {
+      name: "Norse Beauty",
+      from: "#ec77ab",
+      to: "#7873f5",
+    },
+    {
+      name: "Happy Memories",
+      from: "#ff5858",
+      to: "#ff5858",
+    },
   ];
   const [currentBgColor, setCurrentBgColor] = useState(bgColors[0]);
 
   return (
     <>
       <Analytics />
-      <div className="hidden h-full flex-col md:flex" 
-      // onPaste={handlePaste} 
-      >
-
-        <div className="container flex flex-col items-start justify-between space-y-2 py-4 sm:flex-row sm:items-center sm:space-y-0 md:h-16">
-          <h2 className="text-lg font-bold">SnapTool</h2>
-          <div className="ml-auto flex w-full space-x-2 sm:justify-end">
-            {/* <PresetSelector presets={presets} />
-            <PresetSave /> */}
-            <div className="hidden space-x-2 md:flex">
-              {/* <CodeViewer />
-              <PresetShare /> */}
-            </div>
-            {/* <PresetActions /> */}
-          </div>
-        </div>
-        <Separator />
-        <Tabs defaultValue="complete" className="flex-1">
-          <div className="container h-full py-6">
-            <div className="grid h-full items-stretch gap-6 md:grid-cols-[1fr_300px]">
-              <div className="md:order-1">
-                <TabsContent value="complete" className="mt-0 border-0 p-0">
-                  <div className="flex h-full flex-col space-y-4">
-                    <div
-                      {...getRootProps()}
-                      ref={captureDivRef}
-                      className={` h-full min-h-[300px] lg:min-h-[480px] xl:min-h-[480px] w-full border border-slate-600 flex items-center justify-center py-full rounded-3xl hover:cursor-pointer`}
-                      style={{
-                        background: `linear-gradient(to right, ${currentBgColor.from}, ${currentBgColor.to})`,
-                        backgroundSize: "cover",
-                        backgroundPosition: "center",
-                      }}
-                    >
-                      <input {...getInputProps()} />
-                      <div
-                        className={`dropzone-div`}
-                        style={{ width: `${imageWidth}px`, height: `${imageHeight}px`}}
-                      >
-                        {droppedImage && (
-                          <img
-                            src={droppedImage}
-                            alt="Dropped Image"
-                            className={`w-full h-full`}
-                            style={{ position: "relative", zIndex: 1,  borderRadius: `${imageBorder}px` }}
-                          />
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                </TabsContent>
-              </div>
-
-              <div className="hidden flex-col space-y-4 sm:flex md:order-2">
-                <div className="grid gap-2">
-                  <HoverCard openDelay={200}>
-                    <HoverCardTrigger asChild>
-                      <span className="text-md text-semibold font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                        Choose Background
-                      </span>
-                    </HoverCardTrigger>
-                  </HoverCard>
-
-                  <div className="grid grid-cols-5 my-10">
-                    {bgColors.map((color, index) => {
-                      return (
-                        <button
-                          key={index}
-                          onClick={() => setCurrentBgColor(color)}
-                          className="h-10 w-10 rounded-xl"
-                          style={{
-                            background: `linear-gradient(to right, ${color.from},${color.to}`,
-                          }}
-                        ></button>
-                      );
-                    })}
-                  </div>
-
-                  <div className="mb-2">
-                    <h1 className="my-3">Rounded</h1>
-                    <Slider
-                      defaultValue={[imageBorder]}
-                      max={24}
-                      step={1}
-                      onValueChange={handleBorderChange}
-                    />
-                  </div>
-
-                  <div className="my-2">
-                    <h1 className="my-3">Height</h1>
-                    <Slider
-                      defaultValue={[imageHeight]}
-                      max={420}
-                      step={1}
-                      onValueChange={handleHeightChange}
-                    />
-                  </div>
-
-                  <div className="my-2">
-                    <h1 className="my-3">Width</h1>
-                    <Slider
-                      defaultValue={[imageWidth]}
-                      max={420}
-                      step={1}
-                      onValueChange={handleWidthChange}
-                    />
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-2">
-                    <Button className="w-full" onClick={()=> downloadImage()}>Download</Button>
-                    <Button className="w-full " onClick={() => onDelete()}>
-                      Remove
-                    </Button>
+      <div className="flex flex-col min-h-screen bg-[#222C42]">
+        <h2 className="text-4xl font-bold px-4  py-2 text-white">
+          SnapTool
+        </h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 px-5">
+          <div className="py-6 col-span-2">
+            <div className="grid gap-6">
+              <div className="flex flex-col space-y-4">
+                <div
+                  {...getRootProps()}
+                  ref={captureDivRef}
+                  className={`h-full min-h-[300px] lg:min-h-[480px] xl:min-h-[480px] w-full rounded-md border border-slate-600 flex items-center justify-center py-full hover:cursor-pointer`}
+                  style={{
+                    background: `linear-gradient(to right, ${currentBgColor.from}, ${currentBgColor.to})`,
+                    backgroundSize: "cover",
+                    backgroundPosition: "center",
+                  }}
+                >
+                  <input {...getInputProps()} />
+                  <div
+                    className={`dropzone-div`}
+                    style={{
+                      width: `${imageWidth}px`,
+                      height: `${imageHeight}px`,
+                    }}
+                  >
+                    {droppedImage && (
+                      <img
+                        src={droppedImage}
+                        alt="Dropped Image"
+                        className={`w-full h-full`}
+                        style={{
+                          position: "relative",
+                          zIndex: 1,
+                          borderRadius: `${imageBorder}px`,
+                        }}
+                      />
+                    )}
                   </div>
                 </div>
               </div>
             </div>
           </div>
-        </Tabs>
+
+          <div className="container py-4">
+            <div className="grid gap-2">
+              <div className="text-center">
+                <h1 className="my-3 font-semibold text-2xl text-[#AAC1C5]">
+                  Choose Background
+                </h1>
+              </div>
+              <div className="grid grid-cols-3 my-3">
+                {bgColors.map((color, index) => (
+                  <div key={index} className="text-center">
+                    <button
+                      key={index}
+                      onClick={() => setCurrentBgColor(color)}
+                      className="h-10 w-14 rounded-sm m-2"
+                      style={{
+                        background: `linear-gradient(to right, ${color.from}, ${color.to})`,
+                      }}
+                    ></button>
+                    <p className="text-xs text-[#FFFFFF]">{color.name}</p>
+                  </div>
+                ))}
+              </div>
+              <div className="mt-2 text-[#FFFFFF]">
+                <h1 className="my-1">Border Radius</h1>
+                <Slider
+                  defaultValue={[imageBorder]}
+                  max={24}
+                  step={1}
+                  onValueChange={handleBorderChange}
+                />
+              </div>
+              <div className="my-2 text-[#FFFFFF]">
+                <h1 className="my-2">Height</h1>
+                <Slider
+                  defaultValue={[imageHeight]}
+                  max={550}
+                  step={1}
+                  onValueChange={handleHeightChange}
+                />
+              </div>
+              <div className="my-2 text-[#FFFFFF]">
+                <h1 className="my-2">Width</h1>
+                <Slider
+                  defaultValue={[imageWidth]}
+                  max={900}
+                  step={1}
+                  onValueChange={handleWidthChange}
+                />
+              </div>
+              {droppedImage !== null ? (
+                <div className="grid grid-cols-2 gap-2">
+                  <Button className="w-full" onClick={() => downloadImage()}>
+                    Download
+                  </Button>
+                  <Button className="w-full " onClick={() => onDelete()}>
+                    Remove
+                  </Button>
+                </div>
+              ) : null}
+            </div>
+          </div>
+        </div>
       </div>
+      <Footer />
     </>
   );
 }
