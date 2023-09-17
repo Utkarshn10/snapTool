@@ -9,7 +9,7 @@ import html2canvas from "html2canvas";
 import { saveAs } from "file-saver";
 import { Analytics } from "@vercel/analytics/react";
 import Link from "next/link";
-import Head from 'next/head';
+import Head from "next/head";
 
 function Footer() {
   return (
@@ -60,55 +60,54 @@ export default function PlaygroundPage() {
   const downloadImage = () => {
     if (captureDivRef.current) {
       const divToCapture = captureDivRef.current;
-  
+
       // Temporarily remove the border radius from the outer div for capture
       const originalBorderRadius = divToCapture.style.borderRadius;
       divToCapture.style.borderRadius = "0";
-  
+
       const scale = 2;
-  
+
       html2canvas(divToCapture, { scale }).then((canvas) => {
         // Reset the border radius to its original value
         divToCapture.style.borderRadius = originalBorderRadius;
-  
+
         canvas.toBlob((blob) => {
           saveAs(blob, "snaptool-image.png"); // You can change the file format and name here
         });
       });
     }
   };
-  
+
   const downloadTwitterHeaderImage = () => {
     if (captureDivRef.current) {
       const divToCapture = captureDivRef.current;
-  
+
       // Set the dimensions of the div to match Twitter header dimensions (1500x500)
       const width = 1500;
       const height = 500;
-  
+
       divToCapture.style.width = width + "px";
       divToCapture.style.height = height + "px";
-  
+
       // Temporarily remove the border radius from the outer div for capture
       const originalBorderRadius = divToCapture.style.borderRadius;
       divToCapture.style.borderRadius = "0";
-  
+
       // Define the scale to capture a higher-quality image (e.g., 2 for 2x resolution)
       const scale = 2;
-  
+
       html2canvas(divToCapture, { scale }).then((canvas) => {
         // Reset the dimensions and border radius to their original values
         divToCapture.style.width = ""; // Clear the width
         divToCapture.style.height = ""; // Clear the height
         divToCapture.style.borderRadius = originalBorderRadius;
-  
+
         canvas.toBlob((blob) => {
           saveAs(blob, "snaptool-twitter-header.png"); // You can change the file format and name here
         });
       });
     }
   };
-  
 
   const onDrop = useCallback((acceptedFiles) => {
     const imageFile = acceptedFiles.find((file) =>
@@ -195,25 +194,31 @@ export default function PlaygroundPage() {
       <Analytics />
       <Head>
         <title>Add Beautiful Background to Your Screenshots | Snaptool</title>
-        <meta name="description" content="Add a beautiful background to your screenshots with Snaptool. Elevate your content creation with this powerful screenshot editing tool." />
-        <meta name="keywords" content="snap, screenshot, tool, content creation, background" />
+        <meta
+          name="description"
+          content="Add a beautiful background to your screenshots with Snaptool. Elevate your content creation with this powerful screenshot editing tool."
+        />
+        <meta
+          name="keywords"
+          content="snap, screenshot, tool, content creation, background"
+        />
         <meta name="author" content="Utkarsh Nagar" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         {/* Additional meta tags can be added here */}
       </Head>
       <div
-        className="flex flex-col min-h-screen bg-[#222C42]"
+        className="flex flex-col min-h-screen bg-[#222C42] md:pl-5"
         onPaste={handlePaste}
       >
         <h2 className="text-4xl font-bold px-4  py-2 text-white">SnapTool</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 px-5">
-          <div className="py-6 col-span-2">
+        <div className="grid grid-cols-1 p-1 md:grid-cols-3 md: mt-14 px-2 md:px-5">
+          <div className="md:py-6 md:col-span-2">
             <div className="grid gap-6">
               <div className="flex flex-col space-y-4">
                 <div
                   {...getRootProps()}
                   ref={captureDivRef}
-                  className={`h-full min-h-[300px] lg:min-h-[400px] xl:min-h-[400px] w-full rounded-md border border-slate-600 flex items-center justify-center py-full hover:cursor-pointer`}
+                  className={`h-full md:min-h-[400px] xl:min-h-[400px] w-full rounded-md border border-slate-600 flex items-center justify-center py-full hover:cursor-pointer`}
                   style={{
                     background: `linear-gradient(to right, ${currentBgColor.from}, ${currentBgColor.to})`,
                     backgroundSize: "cover",
@@ -224,8 +229,7 @@ export default function PlaygroundPage() {
                   <div
                     className={`dropzone-div`}
                     style={{
-                      width: `${imageWidth}px`,
-                      height: `${imageHeight}px`,
+                      width: "100%", // Adjusted width for smaller screens
                       padding: `${padding}px`,
                     }}
                   >
@@ -233,7 +237,7 @@ export default function PlaygroundPage() {
                       <img
                         src={droppedImage}
                         alt="Dropped Image"
-                        className={`w-full h-full`}
+                        className={`w-full`}
                         style={{
                           position: "relative",
                           zIndex: 1,
@@ -250,29 +254,30 @@ export default function PlaygroundPage() {
           <div className="container py-4">
             <div className="grid gap-2">
               <div className="text-center">
-                <h1 className="my-3 font-semibold text-2xl text-[#AAC1C5]">
+                <h1 className="my-3 font-semibold text-xl md:text-2xl text-[#AAC1C5]">
                   Choose Background
                 </h1>
               </div>
-              <div className="grid grid-cols-4 my-3">
+              <div className="grid grid-cols-2 md:grid-cols-4 my-3">
                 {bgColors.map((color, index) => (
                   <div key={index} className="text-center">
                     <button
                       key={index}
                       onClick={() => setCurrentBgColor(color)}
-                      className="h-10 w-14 rounded-sm m-2"
+                      className="h-8 w-10 md:h-10 md:w-14 rounded-sm m-1 md:m-2"
                       style={{
                         background: `linear-gradient(to right, ${color.from}, ${color.to})`,
                       }}
                     ></button>
-                    <p className="text-xs text-[#FFFFFF]">{color.name}</p>
+                    <p className="text-xs md:text-sm text-[#FFFFFF]">
+                      {color.name}
+                    </p>
                   </div>
                 ))}
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                {" "}
                 <div className="my-2 text-[#FFFFFF]">
-                  <h1 className="my-2">Border Radius</h1>
+                  <h1 className="my-2 text-sm md:text-base">Border Radius</h1>
                   <Slider
                     defaultValue={[imageBorder]}
                     max={24}
@@ -281,7 +286,7 @@ export default function PlaygroundPage() {
                   />
                 </div>
                 <div className="my-2 text-[#FFFFFF]">
-                  <h1 className="my-2">Padding</h1>
+                  <h1 className="my-2 text-sm md:text-base">Padding</h1>
                   <Slider
                     defaultValue={[padding]}
                     max={200}
@@ -290,7 +295,7 @@ export default function PlaygroundPage() {
                   />
                 </div>
                 <div className="my-2 text-[#FFFFFF]">
-                  <h1 className="my-2">Height</h1>
+                  <h1 className="my-2 text-sm md:text-base">Height</h1>
                   <Slider
                     defaultValue={[imageHeight]}
                     max={550}
@@ -299,7 +304,7 @@ export default function PlaygroundPage() {
                   />
                 </div>
                 <div className="my-2 text-[#FFFFFF]">
-                  <h1 className="my-2">Width</h1>
+                  <h1 className="my-2 text-sm md:text-base">Width</h1>
                   <Slider
                     defaultValue={[imageWidth]}
                     max={900}
@@ -309,10 +314,14 @@ export default function PlaygroundPage() {
                 </div>
               </div>
               <div className="flex items-center space-x-2 my-4">
-                <input type="checkbox" onChange={() => setTwitterCheckbox(!twittercheckbox)} className="bg-white text-black h-4 w-4"/>
+                <input
+                  type="checkbox"
+                  onChange={() => setTwitterCheckbox(!twittercheckbox)}
+                  className="bg-white text-black h-4 w-4"
+                />
                 <label
                   htmlFor="terms2"
-                  className="text-sm font-medium text-white leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                  className="text-xs md:text-sm font-medium text-white leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                 >
                   Twitter Header
                 </label>
