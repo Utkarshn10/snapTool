@@ -29,9 +29,11 @@ function Footer() {
 
 export default function PlaygroundPage() {
   const [droppedImage, setDroppedImage] = useState(null);
-  const [imageHeight, setImageHeight] = useState(140);
-  const [imageWidth, setImageWidth] = useState(140);
+  const [imageHeight, setImageHeight] = useState(400);
+  const [padding, setPadding] = useState(2);
+  const [imageWidth, setImageWidth] = useState(400);
   const [imageBorder, setImageBorder] = useState(0);
+  const [twittercheckbox, setTwitterCheckbox] = useState(false);
   const captureDivRef = useRef(null);
 
   const onDelete = () => {
@@ -40,6 +42,10 @@ export default function PlaygroundPage() {
 
   const handleBorderChange = (newValue) => {
     setImageBorder(newValue);
+  };
+
+  const handlePadddingChange = (newValue) => {
+    setPadding(newValue);
   };
 
   const handleHeightChange = (newValue) => {
@@ -53,21 +59,55 @@ export default function PlaygroundPage() {
   const downloadImage = () => {
     if (captureDivRef.current) {
       const divToCapture = captureDivRef.current;
-
+  
       // Temporarily remove the border radius from the outer div for capture
       const originalBorderRadius = divToCapture.style.borderRadius;
       divToCapture.style.borderRadius = "0";
-
-      html2canvas(divToCapture).then((canvas) => {
+  
+      const scale = 2;
+  
+      html2canvas(divToCapture, { scale }).then((canvas) => {
         // Reset the border radius to its original value
         divToCapture.style.borderRadius = originalBorderRadius;
-
+  
         canvas.toBlob((blob) => {
           saveAs(blob, "snaptool-image.png"); // You can change the file format and name here
         });
       });
     }
   };
+  
+  const downloadTwitterHeaderImage = () => {
+    if (captureDivRef.current) {
+      const divToCapture = captureDivRef.current;
+  
+      // Set the dimensions of the div to match Twitter header dimensions (1500x500)
+      const width = 1500;
+      const height = 500;
+  
+      divToCapture.style.width = width + "px";
+      divToCapture.style.height = height + "px";
+  
+      // Temporarily remove the border radius from the outer div for capture
+      const originalBorderRadius = divToCapture.style.borderRadius;
+      divToCapture.style.borderRadius = "0";
+  
+      // Define the scale to capture a higher-quality image (e.g., 2 for 2x resolution)
+      const scale = 2;
+  
+      html2canvas(divToCapture, { scale }).then((canvas) => {
+        // Reset the dimensions and border radius to their original values
+        divToCapture.style.width = ""; // Clear the width
+        divToCapture.style.height = ""; // Clear the height
+        divToCapture.style.borderRadius = originalBorderRadius;
+  
+        canvas.toBlob((blob) => {
+          saveAs(blob, "snaptool-twitter-header.png"); // You can change the file format and name here
+        });
+      });
+    }
+  };
+  
 
   const onDrop = useCallback((acceptedFiles) => {
     const imageFile = acceptedFiles.find((file) =>
@@ -152,10 +192,11 @@ export default function PlaygroundPage() {
   return (
     <>
       <Analytics />
-      <div className="flex flex-col min-h-screen bg-[#222C42]">
-        <h2 className="text-4xl font-bold px-4  py-2 text-white">
-          SnapTool
-        </h2>
+      <div
+        className="flex flex-col min-h-screen bg-[#222C42]"
+        onPaste={handlePaste}
+      >
+        <h2 className="text-4xl font-bold px-4  py-2 text-white">SnapTool</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 px-5">
           <div className="py-6 col-span-2">
             <div className="grid gap-6">
@@ -163,7 +204,7 @@ export default function PlaygroundPage() {
                 <div
                   {...getRootProps()}
                   ref={captureDivRef}
-                  className={`h-full min-h-[300px] lg:min-h-[480px] xl:min-h-[480px] w-full rounded-md border border-slate-600 flex items-center justify-center py-full hover:cursor-pointer`}
+                  className={`h-full min-h-[300px] lg:min-h-[400px] xl:min-h-[400px] w-full rounded-md border border-slate-600 flex items-center justify-center py-full hover:cursor-pointer`}
                   style={{
                     background: `linear-gradient(to right, ${currentBgColor.from}, ${currentBgColor.to})`,
                     backgroundSize: "cover",
@@ -176,6 +217,7 @@ export default function PlaygroundPage() {
                     style={{
                       width: `${imageWidth}px`,
                       height: `${imageHeight}px`,
+                      padding: `${padding}px`,
                     }}
                   >
                     {droppedImage && (
@@ -203,7 +245,7 @@ export default function PlaygroundPage() {
                   Choose Background
                 </h1>
               </div>
-              <div className="grid grid-cols-3 my-3">
+              <div className="grid grid-cols-4 my-3">
                 {bgColors.map((color, index) => (
                   <div key={index} className="text-center">
                     <button
@@ -218,36 +260,64 @@ export default function PlaygroundPage() {
                   </div>
                 ))}
               </div>
-              <div className="mt-2 text-[#FFFFFF]">
-                <h1 className="my-1">Border Radius</h1>
-                <Slider
-                  defaultValue={[imageBorder]}
-                  max={24}
-                  step={1}
-                  onValueChange={handleBorderChange}
-                />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                {" "}
+                <div className="my-2 text-[#FFFFFF]">
+                  <h1 className="my-2">Border Radius</h1>
+                  <Slider
+                    defaultValue={[imageBorder]}
+                    max={24}
+                    step={1}
+                    onValueChange={handleBorderChange}
+                  />
+                </div>
+                <div className="my-2 text-[#FFFFFF]">
+                  <h1 className="my-2">Padding</h1>
+                  <Slider
+                    defaultValue={[padding]}
+                    max={200}
+                    step={1}
+                    onValueChange={handlePadddingChange}
+                  />
+                </div>
+                <div className="my-2 text-[#FFFFFF]">
+                  <h1 className="my-2">Height</h1>
+                  <Slider
+                    defaultValue={[imageHeight]}
+                    max={550}
+                    step={1}
+                    onValueChange={handleHeightChange}
+                  />
+                </div>
+                <div className="my-2 text-[#FFFFFF]">
+                  <h1 className="my-2">Width</h1>
+                  <Slider
+                    defaultValue={[imageWidth]}
+                    max={900}
+                    step={1}
+                    onValueChange={handleWidthChange}
+                  />
+                </div>
               </div>
-              <div className="my-2 text-[#FFFFFF]">
-                <h1 className="my-2">Height</h1>
-                <Slider
-                  defaultValue={[imageHeight]}
-                  max={550}
-                  step={1}
-                  onValueChange={handleHeightChange}
-                />
-              </div>
-              <div className="my-2 text-[#FFFFFF]">
-                <h1 className="my-2">Width</h1>
-                <Slider
-                  defaultValue={[imageWidth]}
-                  max={900}
-                  step={1}
-                  onValueChange={handleWidthChange}
-                />
+              <div className="flex items-center space-x-2 my-4">
+                <input type="checkbox" onChange={() => setTwitterCheckbox(!twittercheckbox)} className="bg-white text-black h-4 w-4"/>
+                <label
+                  htmlFor="terms2"
+                  className="text-sm font-medium text-white leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                >
+                  Twitter Header
+                </label>
               </div>
               {droppedImage !== null ? (
                 <div className="grid grid-cols-2 gap-2">
-                  <Button className="w-full" onClick={() => downloadImage()}>
+                  <Button
+                    className="w-full"
+                    onClick={() =>
+                      twittercheckbox
+                        ? downloadTwitterHeaderImage()
+                        : downloadImage()
+                    }
+                  >
                     Download
                   </Button>
                   <Button className="w-full " onClick={() => onDelete()}>
