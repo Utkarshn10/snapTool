@@ -9,6 +9,7 @@ import html2canvas from "html2canvas";
 import { saveAs } from "file-saver";
 import { Analytics } from "@vercel/analytics/react";
 import Link from "next/link";
+import Head from 'next/head';
 
 function Footer() {
   return (
@@ -192,6 +193,14 @@ export default function PlaygroundPage() {
   return (
     <>
       <Analytics />
+      <Head>
+        <title>Add Beautiful Background to Your Screenshots | Snaptool</title>
+        <meta name="description" content="Add a beautiful background to your screenshots with Snaptool. Elevate your content creation with this powerful screenshot editing tool." />
+        <meta name="keywords" content="snap, screenshot, tool, content creation, background" />
+        <meta name="author" content="Utkarsh Nagar" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        {/* Additional meta tags can be added here */}
+      </Head>
       <div
         className="flex flex-col min-h-screen bg-[#222C42]"
         onPaste={handlePaste}
