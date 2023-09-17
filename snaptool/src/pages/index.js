@@ -211,7 +211,7 @@ export default function PlaygroundPage() {
         onPaste={handlePaste}
       >
         <h2 className="text-4xl font-bold px-4  py-2 text-white md:mt-5">SnapTool</h2>
-        <div className="grid grid-cols-1 p-1 md:grid-cols-3 md: mt-14 px-2 md:px-5">
+        <div className="grid grid-cols-1 p-1 md:grid-cols-3 md: mt-8 px-2 md:px-5">
           <div className="md:py-6 md:col-span-2">
             <div className="grid gap-6">
               <div className="flex flex-col space-y-4">
