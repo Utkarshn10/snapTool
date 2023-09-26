@@ -218,7 +218,7 @@ export default function PlaygroundPage() {
                 <div
                   {...getRootProps()}
                   ref={captureDivRef}
-                  className={`h-full md:min-h-[400px] xl:min-h-[400px] w-full rounded-md border border-slate-600 flex items-center justify-center py-full hover:cursor-pointer`}
+                  className={`min-h-[200px] md:min-h-[400px] xl:min-h-[400px] w-full rounded-md border border-slate-600 flex items-center justify-center py-full hover:cursor-pointer`}
                   style={{
                     background: `linear-gradient(to right, ${currentBgColor.from}, ${currentBgColor.to})`,
                     backgroundSize: "cover",
