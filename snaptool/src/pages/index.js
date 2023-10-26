@@ -347,7 +347,7 @@ export default function PlaygroundPage() {
           </div>
         </div>
       </div>
-      <Footer />
+      {/* <Footer /> */}
     </>
   );
 }
