@@ -210,33 +210,38 @@ export default function PlaygroundPage() {
         className="flex flex-col min-h-screen bg-[#222C42] md:pl-5"
         onPaste={handlePaste}
       >
-        <h2 className="text-4xl font-bold px-4  py-2 text-white md:mt-5">SnapTool</h2>
+        <h2 className="text-4xl font-bold px-4  py-2 text-white md:mt-5">
+          SnapTool
+        </h2>
         <div className="grid grid-cols-1 p-1 md:grid-cols-3 md: mt-8 px-2 md:px-5">
           <div className="md:py-6 md:col-span-2">
             <div className="grid gap-6">
-              <div className="flex flex-col space-y-4">
+              <div
+                {...getRootProps()}
+                ref={captureDivRef}
+                className={`min-h-[200px] md:min-h-[400px] xl:min-h-[400px] w-full rounded-md border border-slate-600 flex items-center justify-center py-full hover:cursor-pointer`}
+                style={{
+                  background: `linear-gradient(to right, ${currentBgColor.from}, ${currentBgColor.to})`,
+                  backgroundSize: "cover",
+                  backgroundPosition: "center",
+                }}
+              >
+                <input {...getInputProps()} />
                 <div
-                  {...getRootProps()}
-                  ref={captureDivRef}
-                  className={`min-h-[200px] md:min-h-[400px] xl:min-h-[400px] w-full rounded-md border border-slate-600 flex items-center justify-center py-full hover:cursor-pointer`}
+                  className={`dropzone-div`}
                   style={{
-                    background: `linear-gradient(to right, ${currentBgColor.from}, ${currentBgColor.to})`,
-                    backgroundSize: "cover",
-                    backgroundPosition: "center",
+                    width: "100%", // Adjusted width for smaller screens
+                    padding: `${padding}px`,
                   }}
                 >
-                  <input {...getInputProps()} />
                   <div
-                    className={`dropzone-div`}
-                    style={{
-                      width: "100%", // Adjusted width for smaller screens
-                      padding: `${padding}px`,
-                    }}
+                    className={`${droppedImage === null ? "border border-dashed border-white" : ""}  text-white rounded-lg mx-4`}
                   >
-                    {droppedImage && (
+                    {droppedImage ? (
                       <img
                         src={droppedImage}
                         alt="Dropped Image"
+                        placeholder="Drag or Drop Image"
                         className={`w-full`}
                         style={{
                           position: "relative",
@@ -244,6 +249,13 @@ export default function PlaygroundPage() {
                           borderRadius: `${imageBorder}px`,
                         }}
                       />
+                    ) : (
+                      <div className="flex flex-col  items-center py-12 justify-center">
+                        <h1 className="text-2xl">Drag or Drop Image</h1>
+                        <h4 className="text-md mt-2">
+                          or click to select Image
+                        </h4>
+                      </div>
                     )}
                   </div>
                 </div>
@@ -289,27 +301,9 @@ export default function PlaygroundPage() {
                   <h1 className="my-2 text-sm md:text-base">Padding</h1>
                   <Slider
                     defaultValue={[padding]}
-                    max={200}
+                    max={120}
                     step={1}
                     onValueChange={handlePadddingChange}
-                  />
-                </div>
-                <div className="my-2 text-[#FFFFFF]">
-                  <h1 className="my-2 text-sm md:text-base">Height</h1>
-                  <Slider
-                    defaultValue={[imageHeight]}
-                    max={550}
-                    step={1}
-                    onValueChange={handleHeightChange}
-                  />
-                </div>
-                <div className="my-2 text-[#FFFFFF]">
-                  <h1 className="my-2 text-sm md:text-base">Width</h1>
-                  <Slider
-                    defaultValue={[imageWidth]}
-                    max={900}
-                    step={1}
-                    onValueChange={handleWidthChange}
                   />
                 </div>
               </div>
@@ -347,7 +341,7 @@ export default function PlaygroundPage() {
           </div>
         </div>
       </div>
-      {/* <Footer /> */}
+      <Footer />
     </>
   );
 }
